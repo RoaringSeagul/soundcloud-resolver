@@ -19,15 +19,15 @@ function SCResolver(cId) {
     var _this = this;
 
     request(_this.resolveUrlPrefix + encodeURI(url), function(error, response, body) {
-      if (error) { callback(error); }
+      if (error) {
+        callback({error: error, response: response, body: body});
+      }
 
       var json;
       try {
         json = JSON.parse(body);
       } catch (parseError) {
-        var err = 'Error passing response from soundcloud. Unable to resolve URL.' +
-                  'This is likely because the track uploader disabled API access.';
-        callback(err)
+        callback({error: error, response: response, body: body})
         return;
       }
       if (json.errors) {
@@ -72,7 +72,9 @@ function SCResolver(cId) {
 
     function(callback) {
       request(url + '&offset=' + page * _this.maxLimit, function(error, response, body) {
-        if (error) { callback(error); }
+        if (error) {
+          callback({error: error, response: response, body: body});
+        }
 
         var json = JSON.parse(body);
         tracks = tracks.concat(json);
@@ -106,7 +108,9 @@ function SCResolver(cId) {
 
     function(callback) {
       request(url, function(error, response, body) {
-        if (error) { callback(error); }
+        if (error) {
+          callback({error: error, response: response, body: body});
+        }
 
         var json = JSON.parse(body);
 
@@ -160,7 +164,9 @@ function SCResolver(cId) {
 
       // call to special endpoint to fetch stream urls
       request('http://api.soundcloud.com/i1/tracks/' + tracks[currentIndex].id + '/streams?client_id=' + magicId, function(error, response, body) {
-        if (error) { callback(error); }
+        if (error) {
+          callback({error: error, response: response, body: body});
+        }
 
         // extract the track data
         var responseBody = JSON.parse(body);
